@@ -1,0 +1,78 @@
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.8.3
+    container_name: kafka
+    ports:
+      - "9092:9092"
+
+    environment:
+      KAFKA_KRAFT_MODE: 'true'
+
+      CLUSTER_ID: '1L6g7nGhU-eAKfL--X25wo'
+      KAFKA_NODE_ID: 1
+
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+    healthcheck:
+      test: ["CMD", "bash", "-c", "nc -z localhost 9092"]
+      interval: 5s
+      timeout: 5s
+      retries: 10  
+
+    volumes:
+      - kafka_kraft:/var/lib/kafka/data
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db  
+    environment: 
+      MONGO_INITDB_ROOT_USERNAME: pizza_hot
+      MONGO_INITDB_ROOT_PASSWORD: pizza_password
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s   
+
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5  
+
+  api:
+    build: /api
+    ports:
+      - 8000:8000
+    environment:
+      USER: pizza_hot
+      PASSWORD: pizza_password   
+      PORT: 27017
+      HOST: mongo
+      KAFKA_URI: kafka:9092
+      REDIS_HOST: redis
+    depends_on:
+      mongo:
+        condition: service_healthy  
+      kafka:
+        condition: service_healthy  
+
+volumes:
+  kafka_kraft: 
+  mongodb_data:  
