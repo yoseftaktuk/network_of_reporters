@@ -1,4 +1,4 @@
-from utilis import ImageService, SendServie
+from utils import ImageService, SendServie
 
 
 image = ImageService()
@@ -12,8 +12,7 @@ def loop_in_file(directory_in_str):
         filename = os.fsdecode(file)
         if filename.endswith('.png'):
             filename = 'data/' + filename 
-            print(filename)
             data = image.to_kafka(filename)
             send.send_to_kafka(data=data)
-
-loop_in_file('data')            
+            send.send_to_mongodb_loader(data=data['image_byts'])
+         

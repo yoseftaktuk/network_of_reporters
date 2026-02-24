@@ -1,6 +1,0 @@
-pillow
-fastapi
-uvicorn
-requests
-kafka-python
-easyocr
