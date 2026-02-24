@@ -3,12 +3,15 @@ import json
 import time
 import os
 from prudocer import KafkaService
-kafka = KafkaService()
+from utils import ElasticService
 
+elastic = ElasticService()
+kafka = KafkaService()
+elastic.create_index()
 kafka_uri = os.getenv('KAFKA_URI')
     
-def get_from_kafka(topic: str, key: str, func):
-    while True:
+def get_from_kafka(topic: str):
+    
         try:
             consumer = KafkaConsumer(
                 topic,
@@ -19,12 +22,11 @@ def get_from_kafka(topic: str, key: str, func):
                 value_deserializer=lambda x: json.loads(x.decode('utf-8'))
             )
             print("Connected to Kafka")
-            break
+            return
         except Exception:
             print("Waiting for Kafka...")
             time.sleep(2)
-    for message in consumer:
+        for message in consumer:
             print(f"Received message value: {message.value}")
-            data = func(message.value[key])
-            kafka.send_to_kafka('clean',data)
+            elastic.upsert(message.value)
             consumer.commit()

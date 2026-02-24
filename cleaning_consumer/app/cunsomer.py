@@ -12,6 +12,7 @@ def get_from_kafka(topic: str, key: str, func):
         try:
             consumer = KafkaConsumer(
                 topic,
+                group_id = '',
                 bootstrap_servers=kafka_uri,
                 auto_offset_reset='earliest',
                 enable_auto_commit=False,
