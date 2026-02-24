@@ -1,16 +1,19 @@
 from PIL import Image, UnidentifiedImageError
 import logging
 import easyocr
+import pytesseract
 import os
 import requests
 from producer import KafkaService
 import uuid  
+
 
 class ImageService:
     def read_from_image(self,img: str):
         reader = easyocr.Reader(['en'])
         try:
             result = reader.readtext(img)
+            return result
         except TypeError as e:
             logging.warning(str(e))
         words = ''
