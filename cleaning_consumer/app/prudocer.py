@@ -1,4 +1,3 @@
-
 from asyncio import log
 from kafka import KafkaProducer
 import json
