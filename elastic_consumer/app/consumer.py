@@ -26,6 +26,5 @@ def get_from_kafka(topic: str, key: str, func):
     for message in consumer:
             print(f"Received message value: {message.value}")
             data = func(message.value[key])
-            message.value['clean_words'] = data
-            kafka.send_to_kafka('clean',message.value)
+            kafka.send_to_kafka('clean',data)
             consumer.commit()
