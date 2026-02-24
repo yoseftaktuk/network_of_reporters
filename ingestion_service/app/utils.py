@@ -42,12 +42,10 @@ class ImageService:
         return img.tobytes()
     
     def to_kafka(self, path: str):
-       return {'image_byts' :self.get_image_byts(path),
+       return {
                'meta_data': self.get_matedata(path),
                'image_id': str(uuid.uuid4()),
                'words': self.read_from_image(path)}
-    def test(self):
-        print(self.to_kafka('data/tweet_0.png'))
 
 
 kafka = KafkaService()  

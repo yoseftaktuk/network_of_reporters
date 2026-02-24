@@ -3,7 +3,7 @@ import string
 from nltk.corpus import stopwords
 nltk.download('stopwords')
 nltk.download('punkt_tab')
-from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.tokenize import word_tokenize
 
 class CleaningService:
     def punctuation_cleaning(self, words: str):
