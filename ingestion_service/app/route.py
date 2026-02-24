@@ -9,4 +9,4 @@ def start():
 
 @route.post('/post_to_kafka')
 def send_to_kafka():
-    loop_in_file()
+    loop_in_file('data')

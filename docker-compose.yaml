@@ -16,7 +16,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
@@ -36,8 +36,8 @@ services:
     volumes:
       - mongodb_data:/data/db  
     environment: 
-      MONGO_INITDB_ROOT_USERNAME: pizza_hot
-      MONGO_INITDB_ROOT_PASSWORD: pizza_password
+      MONGO_INITDB_ROOT_USERNAME: my_db
+      MONGO_INITDB_ROOT_PASSWORD: my_password
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping').ok"]
       interval: 10s
@@ -56,22 +56,28 @@ services:
       timeout: 3s
       retries: 5  
 
-  api:
-    build: /api
+  ingestion_service:
+    build: /ingestion_service
     ports:
       - 8000:8000
     environment:
-      USER: pizza_hot
-      PASSWORD: pizza_password   
-      PORT: 27017
-      HOST: mongo
-      KAFKA_URI: kafka:9092
-      REDIS_HOST: redis
+      PATH: data  
+      KAFKA_URI: localhost:9092
+      MONGODB_LODER_URL: http://mongo:8080/post_to_mongodb
     depends_on:
       mongo:
         condition: service_healthy  
       kafka:
         condition: service_healthy  
+  mongodb_loader_service:
+    build: /nongodb_loader_service
+    environment:
+        USER: my_db
+        PASSWORD: my_password   
+        PORT: 27017
+        HOST: mongo
+    ports:
+        - 8080:8080  
 
 volumes:
   kafka_kraft: 

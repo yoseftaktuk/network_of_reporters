@@ -5,6 +5,7 @@ import os
 import requests
 from producer import KafkaService
 import uuid  
+
 class ImageService:
     def read_from_image(self,img: str):
         reader = easyocr.Reader(['en'])
@@ -28,22 +29,28 @@ class ImageService:
                'weight': f'{os.path.getsize(path)} kb'}
     
     def get_image_byts(self, path):
-        try:
-            img = Image.open(path)
+        try: 
+            with open(path, "rb") as f:
+                return f.read()
         except UnidentifiedImageError as e:
             logging.warning(e)
             return str(e) 
+        img.close()
         return img.tobytes()
     
-    def to_kafka(self, path):
+    def to_kafka(self, path: str):
        return {'image_byts' :self.get_image_byts(path),
                'meta_data': self.get_matedata(path),
-               'image_id': str(uuid.uuid4())}
-  
+               'image_id': str(uuid.uuid4()),
+               'words': self.read_from_image(path)}
+    def test(self):
+        print(self.to_kafka('data/tweet_0.png'))
+
+
 kafka = KafkaService()  
 class SendServie:
     def send_to_mongodb_loader(self, data: bytes):
-        url = os.getenv('MONGODB_LOADER_URL')
+        url = os.getenv('MONGODB_LOADER_URL', 'http://mongo:8080/post_to_mongodb')
         try: 
             requests.post(url=url, data=data)
         except requests.exceptions.RequestException as e:
