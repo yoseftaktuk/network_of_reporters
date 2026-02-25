@@ -1,11 +1,12 @@
 import nltk
 import string
 from nltk.corpus import stopwords
-nltk.download('stopwords')
-nltk.download('punkt_tab')
 from nltk.tokenize import word_tokenize
 
 class CleaningService:
+    def __init__(self):   
+        nltk.download('stopwords')
+        nltk.download('punkt_tab')
     def punctuation_cleaning(self, words: str):
         clean_text = words.translate(str.maketrans('', '', string.punctuation))
         return clean_text

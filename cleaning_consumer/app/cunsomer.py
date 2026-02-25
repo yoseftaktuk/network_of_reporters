@@ -12,7 +12,7 @@ def get_from_kafka(topic: str, key: str, func):
         try:
             consumer = KafkaConsumer(
                 topic,
-                group_id = '',
+                group_id = '2',
                 bootstrap_servers=kafka_uri,
                 auto_offset_reset='earliest',
                 enable_auto_commit=False,
@@ -24,9 +24,13 @@ def get_from_kafka(topic: str, key: str, func):
         except Exception:
             print("Waiting for Kafka...")
             time.sleep(2)
-    for message in consumer:
-            print(f"Received message value: {message.value}")
-            data = func(message.value[key])
-            message.value['clean_words'] = data
-            kafka.send_to_kafka('clean',message.value)
-            consumer.commit()
+    while True:
+        records = consumer.poll(timeout_ms=1000)        
+        for tp, messages in records.items():
+            for message in messages:
+                data = func(message.value[key])
+                message.value['clean_words'] = data
+                print(f"Received: {message.value}")
+                kafka.send_to_kafka('clean',message.value)
+                consumer.commit()
+

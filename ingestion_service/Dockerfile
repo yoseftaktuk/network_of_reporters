@@ -2,6 +2,10 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+ENV PYHTONUNBUFFERED=1
+RUN apt-get update \
+  && apt-get -y install tesseract-ocr
+
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
