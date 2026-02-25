@@ -1,0 +1,13 @@
+
+
+
+
+
+
+
+
+
+
+
+
+CMD ['streamlit' 'run' 'elastic_query.py']
