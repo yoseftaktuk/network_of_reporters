@@ -21,19 +21,21 @@ class ElasticService:
         return map         
         
     def create_index(self):
-        es = Elasticsearch(os.getenv('ELASTIC_URI',"localhost:9200"))  
-        response = es.indices.create(index='image', body=self.mapping())
-        print(response)
+        es = Elasticsearch(os.getenv('ELASTIC_URI',"http://elasticsearch:9200"))  
+        if not es.indices.exists(index='image'):
+            response = es.indices.create(index='image', body=self.mapping())
+            print(response)
+            return
+        return
 
     def upsert(self, data: dict):
-        es = Elasticsearch(os.getenv('ELASTIC_URI',"localhost:9200"))
+        es = Elasticsearch(os.getenv('ELASTIC_URI',"http://elasticsearch:9200"))
         doc_id = data['image_id']
-        index_name = "my_index"
+        index_name = "image"
         document_body = data
         response = es.index(
         index=index_name,
         id=doc_id,
-        body=document_body,
-        doc_as_upsert=True
+        body=document_body
     )
         return response

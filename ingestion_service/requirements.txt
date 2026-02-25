@@ -3,4 +3,4 @@ fastapi
 uvicorn
 requests
 kafka-python
-easyocr
+pytesseract

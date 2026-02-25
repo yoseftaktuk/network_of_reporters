@@ -55,9 +55,9 @@ class AnalyticsService:
         return 'NEGATIVE'
     
     def do_all(self, data: dict):
-        data['10_commend_words'] = self.sort_and_get_10(data['clean_word'])
-        data['weapons'] = self.search_for_weapons(data['clean_word'].split())
-        data['sentiment_clean_words'] = self.check_sentiment(self.get_sentiment(data['clean_word']))
+        data['10_commend_words'] = self.sort_and_get_10(data['clean_words'])
+        data['weapons'] = self.search_for_weapons(data['clean_words'].split())
+        data['sentiment_clean_words'] = self.check_sentiment(self.get_sentiment(data['clean_words']))
         data['sentiment'] = self.check_sentiment(self.get_sentiment(data['words']))
         return data
 

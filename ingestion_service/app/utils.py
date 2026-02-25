@@ -1,25 +1,23 @@
 from PIL import Image, UnidentifiedImageError
 import logging
-import easyocr
-import pytesseract
 import os
 import requests
 from producer import KafkaService
 import uuid  
+from PIL import Image
+import pytesseract
+
 
 
 class ImageService:
     def read_from_image(self,img: str):
-        reader = easyocr.Reader(['en'])
         try:
-            result = reader.readtext(img)
+            img = Image.open(img)
+            result = pytesseract.image_to_string(img)
             return result
         except TypeError as e:
             logging.warning(str(e))
-        words = ''
-        for (bbox, text, prod) in result:
-            words += text
-        return words
+        return result
     
     def get_matedata(self, path: str):
         try:
@@ -51,7 +49,7 @@ class ImageService:
 kafka = KafkaService()  
 class SendServie:
     def send_to_mongodb_loader(self, data: bytes):
-        url = os.getenv('MONGODB_LOADER_URL', 'http://mongo:8080/post_to_mongodb')
+        url = os.getenv('MONGODB_LOADER_URL', 'http://mongodb_loader_service:8080/post_to_mongodb')
         try: 
             requests.post(url=url, data=data)
         except requests.exceptions.RequestException as e:
