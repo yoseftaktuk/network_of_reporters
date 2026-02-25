@@ -1,0 +1,6 @@
+pillow
+fastapi
+uvicorn
+requests
+kafka-python
+pytesseract
