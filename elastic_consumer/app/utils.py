@@ -11,8 +11,8 @@ class ElasticService:
                     'image_id' :        {'type': 'keyword'},
                     'words':            {'type': 'text'},
                     'clean_words':       {'type': 'text'},
-                    '10_commend_words': {'type': 'object'},
-                    'weapons':          {'type': 'object'},
+                    '10_commend_words': {'type': 'keyword'},
+                    'weapons':          {'type': 'keyword'},
                     'sentiment_clean_words': {'type': 'keyword'},
                     'sentiment':        {'type': 'keyword'} 
                     }

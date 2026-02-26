@@ -30,5 +30,5 @@ def get_from_kafka(topic: str, func):
             for message in messages:       
                 print(f"Received message value: {message.value}")
                 data = func(message.value)
-                kafka.send_to_kafka('analytic', data=data)
+                kafka.send_to_kafka('analytics', data=data)
                 consumer.commit()
