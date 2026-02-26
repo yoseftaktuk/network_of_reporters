@@ -92,7 +92,17 @@ services:
             condition: service_healthy  
           elasticsearch:
             condition: service_healthy    
-                    
+
+  elastic_search:
+      build: /search_service
+      environment:
+        ELASTIC_URI: http://elasticsearch:9200  
+      depends_on:
+          elasticsearch:
+                condition: service_healthy 
+      ports:
+        - 8501:8501                   
+
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.3.0
@@ -119,7 +129,11 @@ services:
         "CMD-SHELL",
         "curl --silent -f http://localhost:9200/_cluster/health?wait_for_status=green&timeout=1s || exit 1"
       ]  
-
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s 
+      
 volumes:
   kafka_kraft: 
   mongodb_data:  

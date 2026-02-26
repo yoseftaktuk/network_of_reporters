@@ -10,9 +10,9 @@ class ElasticService:
                     'meta_data':        {'type': 'object'},
                     'image_id' :        {'type': 'keyword'},
                     'words':            {'type': 'text'},
-                    'clean_word':       {'type': 'text'},
-                    '10_commend_words': {'type': 'object'},
-                    'weapons':          {'type': 'object'},
+                    'clean_words':       {'type': 'text'},
+                    '10_commend_words': {'type': 'keyword'},
+                    'weapons':          {'type': 'keyword'},
                     'sentiment_clean_words': {'type': 'keyword'},
                     'sentiment':        {'type': 'keyword'} 
                     }

@@ -40,7 +40,7 @@ class AnalyticsService:
         for word in data:
             if (word in wepone_list) and (word not in wepone_in_data):
                 wepone_in_data.append(word)
-        return wepone_list     
+        return wepone_in_data     
        
     def get_sentiment(self, text: str):
         nltk.download('vader_lexicon')# Compute sentiment labels 
